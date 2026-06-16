@@ -65,9 +65,9 @@ export default function ListaEquipos() {
     return (
       <div className="space-y-3">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="animate-pulse border border-[#2a2a2a] bg-[#111] p-4">
-            <div className="mb-2 h-3 w-3/4 rounded bg-[#2a2a2a]" />
-            <div className="h-2 w-1/2 rounded bg-[#2a2a2a]" />
+          <div key={i} className="animate-pulse border border-[#1E90FF] bg-[#000000] p-4">
+            <div className="mb-2 h-3 w-3/4 rounded bg-[#1E90FF]" />
+            <div className="h-2 w-1/2 rounded bg-[#1E90FF]" />
           </div>
         ))}
       </div>
@@ -76,8 +76,8 @@ export default function ListaEquipos() {
 
   if (equipos.length === 0) {
     return (
-      <div className="border border-[#2a2a2a] bg-[#111] p-8 text-center">
-        <Package size={24} className="mx-auto mb-2 text-[#555]" />
+      <div className="border border-[#1E90FF] bg-[#000000] p-8 text-center">
+        <Package size={24} className="mx-auto mb-2 text-[#FF2D9A]" />
         <p className="text-sm text-[#737373]">No hay equipos registrados</p>
       </div>
     );
@@ -88,7 +88,7 @@ export default function ListaEquipos() {
       {equipos.map((eq) => (
         <div
           key={eq.id}
-          className="border border-[#2a2a2a] bg-[#111] p-4 transition hover:border-[#444]"
+          className="border border-[#1E90FF] bg-[#000000] p-4 transition hover:border-[#00CFFF] hover:glow-cyan"
         >
           <div className="mb-2 flex items-start justify-between gap-2">
             <div className="min-w-0 flex-1">
@@ -112,7 +112,7 @@ export default function ListaEquipos() {
             <select
               value={eq.status}
               onChange={(e) => handleStatusChange(eq.id, e.target.value)}
-              className="flex-1 border border-[#2a2a2a] bg-[#0a0a0a] px-2 py-1.5 text-xs text-[#f5f5f5] focus:border-[#555]"
+              className="flex-1 border border-[#1E90FF] bg-[#000000] px-2 py-1.5 text-xs text-[#f5f5f5] focus:border-[#00CFFF]"
             >
               {statusList.map((s) => (
                 <option key={s.value} value={s.value}>

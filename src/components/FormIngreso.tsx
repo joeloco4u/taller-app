@@ -116,8 +116,8 @@ export default function FormIngreso() {
 
   if (success) {
     return (
-      <div className="border border-[#2a2a2a] bg-[#111] p-8 text-center">
-        <CheckCircle size={32} className="mx-auto mb-3 text-green-400" />
+      <div className="border border-[#00CFFF] bg-[#000000] p-8 text-center">
+        <CheckCircle size={32} className="mx-auto mb-3 text-[#00CFFF]" />
         <p className="mb-1 text-sm font-medium text-[#f5f5f5]">
           Equipo registrado exitosamente
         </p>
@@ -126,7 +126,7 @@ export default function FormIngreso() {
         </p>
         <button
           onClick={handleNew}
-          className="border border-[#333] bg-[#0a0a0a] px-6 py-2 text-xs font-medium uppercase tracking-widest text-[#f5f5f5] transition hover:bg-[#1a1a1a]"
+          className="border border-[#00CFFF] bg-[#0A0A0F] px-6 py-2 text-xs font-medium uppercase tracking-widest text-[#00CFFF] transition hover:glow-cyan"
         >
           Nuevo ingreso
         </button>
@@ -137,8 +137,8 @@ export default function FormIngreso() {
   return (
     <>
       <div className="mb-6 flex items-center gap-2">
-        <ClipboardList size={16} className="text-[#737373]" />
-        <h2 className="text-sm font-medium uppercase tracking-widest text-[#737373]">
+        <ClipboardList size={16} className="text-[#00CFFF]" />
+        <h2 className="text-sm font-medium uppercase tracking-widest text-[#00CFFF]">
           Nuevo ingreso
         </h2>
       </div>
@@ -227,7 +227,7 @@ export default function FormIngreso() {
         <button
           type="submit"
           disabled={saving}
-          className="mt-8 flex w-full items-center justify-center gap-2 border border-[#333] bg-[#111] py-3 text-sm font-medium uppercase tracking-widest text-[#f5f5f5] transition hover:bg-[#1a1a1a] active:bg-[#222] disabled:opacity-50"
+          className="mt-8 flex w-full items-center justify-center gap-2 border border-[#FFE14D] bg-[#FFE14D] py-3 text-sm font-bold uppercase tracking-widest text-[#000000] transition hover:glow-yellow active:brightness-90 disabled:opacity-50"
         >
           {saving && <Loader size={14} className="animate-spin" />}
           {saving ? "Registrando..." : "Registrar ingreso"}
@@ -245,13 +245,13 @@ function InputRow({
 }) {
   return (
     <label className="group block">
-      <span className="mb-1.5 flex items-center gap-1.5 text-xs text-[#737373]">
+      <span className="mb-1.5 flex items-center gap-1.5 text-xs text-[#FF2D9A]">
         {icon}{label}
       </span>
       <input
         type={type} placeholder={placeholder} value={value}
         onChange={(e) => onChange(e.target.value)} required={required}
-        className="w-full border border-[#2a2a2a] bg-[#111] px-3 py-2.5 text-sm text-[#f5f5f5] transition-colors placeholder:text-[#555] focus:border-[#555]"
+        className="w-full border border-[#1E90FF] bg-[#000000] px-3 py-2.5 text-sm text-[#f5f5f5] transition-colors placeholder:text-[#555] focus:border-[#00CFFF]"
       />
     </label>
   );
@@ -265,13 +265,13 @@ function TextareaRow({
 }) {
   return (
     <label className="group block">
-      <span className="mb-1.5 flex items-center gap-1.5 text-xs text-[#737373]">
+      <span className="mb-1.5 flex items-center gap-1.5 text-xs text-[#FF2D9A]">
         {icon}{label}
       </span>
       <textarea
         rows={3} placeholder={placeholder} value={value}
         onChange={(e) => onChange(e.target.value)} required={required}
-        className="w-full resize-none border border-[#2a2a2a] bg-[#111] px-3 py-2.5 text-sm text-[#f5f5f5] transition-colors placeholder:text-[#555] focus:border-[#555]"
+        className="w-full resize-none border border-[#1E90FF] bg-[#000000] px-3 py-2.5 text-sm text-[#f5f5f5] transition-colors placeholder:text-[#555] focus:border-[#00CFFF]"
       />
     </label>
   );

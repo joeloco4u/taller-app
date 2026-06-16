@@ -3,7 +3,8 @@
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
-import { Cpu, Eye, EyeOff } from "lucide-react";
+import Image from "next/image";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -41,8 +42,14 @@ export default function LoginPage() {
     <div className="flex min-h-dvh items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="mb-10 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center border border-[#333] bg-[#111]">
-            <Cpu size={24} className="text-[#f5f5f5]" />
+          <div className="mx-auto mb-4 flex items-center justify-center">
+            <Image
+              src="/logo.jpg"
+              alt="King PC Electronic"
+              width={80}
+              height={80}
+              className="w-20 h-20 rounded-full object-cover"
+            />
           </div>
           <h1 className="text-lg font-semibold tracking-tight text-[#f5f5f5]">
             Taller App
@@ -63,7 +70,7 @@ export default function LoginPage() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="admin@taller.com"
               required
-              className="w-full border border-[#2a2a2a] bg-[#111] px-3 py-2.5 text-sm text-[#f5f5f5] placeholder:text-[#555] focus:border-[#555]"
+              className="w-full border border-[#1E90FF] bg-[#000000] px-3 py-2.5 text-sm text-[#f5f5f5] placeholder:text-[#555] focus:border-[#00CFFF]"
             />
           </label>
 
@@ -78,7 +85,7 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 required
-                className="w-full border border-[#2a2a2a] bg-[#111] px-3 py-2.5 pr-10 text-sm text-[#f5f5f5] placeholder:text-[#555] focus:border-[#555]"
+                className="w-full border border-[#1E90FF] bg-[#000000] px-3 py-2.5 pr-10 text-sm text-[#f5f5f5] placeholder:text-[#555] focus:border-[#00CFFF]"
               />
               <button
                 type="button"
@@ -98,7 +105,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full border border-[#333] bg-[#111] py-2.5 text-sm font-medium uppercase tracking-widest text-[#f5f5f5] transition hover:bg-[#1a1a1a] active:bg-[#222] disabled:opacity-50"
+            className="w-full border border-[#FFE14D] bg-[#FFE14D] py-2.5 text-sm font-bold uppercase tracking-widest text-[#000000] transition hover:glow-yellow active:brightness-90 disabled:opacity-50"
           >
             {loading ? "Ingresando..." : "Ingresar"}
           </button>
