@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { ClipboardList, PackageSearch, LogOut } from "lucide-react";
+import { ClipboardList, PackageSearch, Users, LogOut } from "lucide-react";
 import FormIngreso from "@/components/FormIngreso";
 import ListaEquipos from "@/components/ListaEquipos";
+import DirectorioClientes from "@/components/DirectorioClientes";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 
-type Tab = "ingreso" | "lista";
+type Tab = "ingreso" | "lista" | "directorio";
 
 export default function Dashboard() {
   const [tab, setTab] = useState<Tab>("ingreso");
@@ -76,10 +77,21 @@ export default function Dashboard() {
           <PackageSearch size={14} />
           Equipos
         </button>
+        <button
+          onClick={() => setTab("directorio")}
+          className={`flex flex-1 items-center justify-center gap-2 border-b-2 px-4 py-3 text-xs font-medium uppercase tracking-widest transition ${
+            tab === "directorio"
+              ? "border-[#00CFFF] text-[#00CFFF]"
+              : "border-transparent text-[#555] hover:text-[#737373]"
+          }`}
+        >
+          <Users size={14} />
+          Clientes
+        </button>
       </nav>
 
       <main className="flex-1">
-        {tab === "ingreso" ? <FormIngreso /> : <ListaEquipos />}
+        {tab === "ingreso" ? <FormIngreso /> : tab === "lista" ? <ListaEquipos /> : <DirectorioClientes />}
       </main>
 
       <footer className="mt-10 border-t border-[#1E90FF] pt-4 text-center text-xs text-[#555]">

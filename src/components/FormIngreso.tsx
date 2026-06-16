@@ -3,7 +3,7 @@
 import { useState, FormEvent } from "react";
 import { createClient } from "@/utils/supabase/client";
 import {
-  User, Hash, Phone, Mail, Monitor, Wrench, Package, ClipboardList, CheckCircle, Loader,
+  User, Hash, Phone, Mail, Monitor, Wrench, Package, ClipboardList, CheckCircle, Loader, Search,
 } from "lucide-react";
 
 type FormData = {
@@ -30,10 +30,40 @@ export default function FormIngreso() {
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [searching, setSearching] = useState(false);
+  const [clienteMsg, setClienteMsg] = useState<{ text: string; type: "found" | "new" } | null>(null);
   const supabase = createClient();
 
   function update(key: keyof FormData, value: string) {
     setForm((prev) => ({ ...prev, [key]: value }));
+    if (key === "cedula") setClienteMsg(null);
+  }
+
+  async function handleBuscarCliente() {
+    const cedula = form.cedula.trim();
+    if (!cedula) return;
+    setSearching(true);
+    setClienteMsg(null);
+
+    const { data } = await supabase
+      .from("clientes")
+      .select("nombre, telefono, correo")
+      .eq("cedula", cedula)
+      .maybeSingle();
+
+    if (data) {
+      setForm((prev) => ({
+        ...prev,
+        nombre: data.nombre,
+        telefono: data.telefono,
+        correo: data.correo ?? "",
+      }));
+      setClienteMsg({ text: "Cliente encontrado", type: "found" });
+    } else {
+      setClienteMsg({ text: "Nuevo cliente", type: "new" });
+    }
+
+    setSearching(false);
   }
 
   async function handleSubmit(e: FormEvent) {
@@ -88,6 +118,7 @@ export default function FormIngreso() {
       const equipoId = equipo!.id;
       setSuccess(equipoId);
       setForm(emptyForm);
+      setClienteMsg(null);
 
       const telefono = form.telefono.replace(/[\s+\-()]/g, "");
       const numero = telefono.startsWith("0") ? "58" + telefono.slice(1) : telefono;
@@ -149,15 +180,44 @@ export default function FormIngreso() {
             Datos del cliente
           </legend>
           <div className="space-y-3">
+            <div>
+              <div className="flex gap-2">
+                <div className="flex-1">
+                  <InputRow
+                    icon={<Hash size={14} />} label="Cédula / RIF"
+                    placeholder="Ej: V-12345678" value={form.cedula}
+                    onChange={(v) => update("cedula", v)} required
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={handleBuscarCliente}
+                  disabled={searching || !form.cedula.trim()}
+                  className="mt-6 flex h-[42px] w-[42px] shrink-0 items-center justify-center border border-[#00CFFF] bg-[#000000] text-[#00CFFF] transition hover:glow-cyan disabled:opacity-40"
+                >
+                  {searching ? (
+                    <Loader size={16} className="animate-spin" />
+                  ) : (
+                    <Search size={16} />
+                  )}
+                </button>
+              </div>
+              {clienteMsg && (
+                <p
+                  className={`mt-1 text-[11px] ${
+                    clienteMsg.type === "found"
+                      ? "text-[#22FF66]"
+                      : "text-[#FF2D9A]"
+                  }`}
+                >
+                  {clienteMsg.text}
+                </p>
+              )}
+            </div>
             <InputRow
               icon={<User size={14} />} label="Nombre completo"
               placeholder="Ej: Juan Pérez" value={form.nombre}
               onChange={(v) => update("nombre", v)} required
-            />
-            <InputRow
-              icon={<Hash size={14} />} label="Cédula / RIF"
-              placeholder="Ej: V-12345678" value={form.cedula}
-              onChange={(v) => update("cedula", v)} required
             />
             <InputRow
               icon={<Phone size={14} />} label="Teléfono" type="tel"
@@ -243,17 +303,19 @@ function InputRow({
   icon: React.ReactNode; label: string; type?: string; placeholder: string;
   value: string; onChange: (v: string) => void; required?: boolean;
 }) {
+  const fieldId = label.replace(/\s+/g, "-").toLowerCase();
   return (
-    <label className="group block">
-      <span className="mb-1.5 flex items-center gap-1.5 text-xs text-[#FF2D9A]">
+    <div className="group block">
+      <label htmlFor={fieldId} className="mb-1.5 flex items-center gap-1.5 text-xs text-[#FF2D9A]">
         {icon}{label}
-      </span>
+      </label>
       <input
+        id={fieldId}
         type={type} placeholder={placeholder} value={value}
         onChange={(e) => onChange(e.target.value)} required={required}
         className="w-full border border-[#1E90FF] bg-[#000000] px-3 py-2.5 text-sm text-[#f5f5f5] transition-colors placeholder:text-[#555] focus:border-[#00CFFF]"
       />
-    </label>
+    </div>
   );
 }
 
@@ -263,16 +325,18 @@ function TextareaRow({
   icon: React.ReactNode; label: string; placeholder: string;
   value: string; onChange: (v: string) => void; required?: boolean;
 }) {
+  const fieldId = label.replace(/\s+/g, "-").toLowerCase();
   return (
-    <label className="group block">
-      <span className="mb-1.5 flex items-center gap-1.5 text-xs text-[#FF2D9A]">
+    <div className="group block">
+      <label htmlFor={fieldId} className="mb-1.5 flex items-center gap-1.5 text-xs text-[#FF2D9A]">
         {icon}{label}
-      </span>
+      </label>
       <textarea
+        id={fieldId}
         rows={3} placeholder={placeholder} value={value}
         onChange={(e) => onChange(e.target.value)} required={required}
         className="w-full resize-none border border-[#1E90FF] bg-[#000000] px-3 py-2.5 text-sm text-[#f5f5f5] transition-colors placeholder:text-[#555] focus:border-[#00CFFF]"
       />
-    </label>
+    </div>
   );
 }
