@@ -1,6 +1,8 @@
 import { createClient } from "@supabase/supabase-js";
 import { notFound } from "next/navigation";
-import { Cpu, CheckCircle, Clock, Wrench, Truck, DollarSign, FileText } from "lucide-react";
+import Image from "next/image";
+import { CheckCircle, Clock, Wrench, Truck, DollarSign, FileText } from "lucide-react";
+import PrintButton from "@/components/PrintButton";
 
 const statusConfig: Record<
   string,
@@ -72,11 +74,18 @@ export default async function ReciboPage({
 
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-sm flex-col px-4 py-8">
-      <div className={`flex-1 border p-6 ${isEntregado ? "border-[#00CFFF]" : "border-[#1E90FF]"} bg-[#000000]`}>
+      <div
+        className={`flex-1 border p-6 ${isEntregado ? "border-[#00CFFF]" : "border-[#1E90FF]"} bg-[#000000]`}
+        style={{ WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }}
+      >
         <div className="mb-6 text-center">
-          <div className={`mx-auto mb-3 flex h-12 w-12 items-center justify-center border ${isEntregado ? "border-[#00CFFF]" : "border-[#1E90FF]"} bg-[#0A0A0F]`}>
-            <Cpu size={20} className={isEntregado ? "text-[#00CFFF]" : "text-[#f5f5f5]"} />
-          </div>
+          <Image
+            src="/logo.jpg"
+            alt="King PC Electronic"
+            width={64}
+            height={64}
+            className="mx-auto mb-3 rounded-full object-cover print:block"
+          />
           <h1 className="text-base font-semibold tracking-tight text-[#f5f5f5]">
             {isEntregado ? "Factura de Salida" : "Comprobante de Recepción"}
           </h1>
@@ -97,6 +106,9 @@ export default async function ReciboPage({
             <p className="text-xs text-[#737373]">{equipo.clientes.telefono}</p>
             {equipo.clientes.correo && (
               <p className="text-xs text-[#737373]">{equipo.clientes.correo}</p>
+            )}
+            {equipo.clientes.direccion && (
+              <p className="text-xs text-[#737373]">{equipo.clientes.direccion}</p>
             )}
           </div>
         </section>
@@ -188,7 +200,9 @@ export default async function ReciboPage({
         </p>
       </div>
 
-      <p className="mt-4 text-center text-[10px] text-[#555]">
+      <PrintButton />
+
+      <p className="print:hidden mt-4 text-center text-[10px] text-[#555]">
         {isEntregado
           ? "Este documento certifica la entrega del equipo."
           : "Este comprobante es válido como constancia de recepción."}

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
+import Image from "next/image";
 import {
   ArrowLeft, CheckCircle, Loader, ExternalLink, Hash, Monitor, Wrench, Package, Clock, DollarSign, FileText,
 } from "lucide-react";
@@ -21,7 +22,7 @@ type EquipoConCliente = {
   costo: string | null;
   fecha_salida: string | null;
   created_at: string;
-  clientes: { nombre: string; cedula: string; telefono: string; correo: string | null } | null;
+  clientes: { nombre: string; cedula: string; telefono: string; correo: string | null; direccion: string | null } | null;
 };
 
 export default function EditarPage({ params }: { params: Promise<{ id: string }> }) {
@@ -62,6 +63,8 @@ export default function EditarPage({ params }: { params: Promise<{ id: string }>
     setSaving(true);
     setError(null);
     setSuccess(false);
+
+    if (equipo.status === "entregado") return;
 
     const { error: upErr } = await supabase
       .from("equipos")
@@ -135,7 +138,14 @@ export default function EditarPage({ params }: { params: Promise<{ id: string }>
         >
           <ArrowLeft size={14} />
         </button>
-        <div>
+        <Image
+          src="/logo.jpg"
+          alt="King PC Electronic"
+          width={36}
+          height={36}
+          className="shrink-0 rounded-full object-cover"
+        />
+        <div className="flex-1">
           <h1 className="text-sm font-semibold tracking-tight text-[#f5f5f5]">
             Cierre de Orden
           </h1>
@@ -143,7 +153,22 @@ export default function EditarPage({ params }: { params: Promise<{ id: string }>
             #{equipo.id.slice(0, 8).toUpperCase()}
           </p>
         </div>
+        {isEntregado && (
+          <button
+            type="button"
+            onClick={() => window.print()}
+            className="print:hidden flex h-8 items-center gap-1.5 border border-[#00CFFF] bg-[#000000] px-3 text-[10px] font-medium uppercase tracking-widest text-[#00CFFF] transition hover:glow-cyan"
+          >
+            🖨️ PDF
+          </button>
+        )}
       </div>
+
+      {isEntregado && (
+        <div className="mb-6 border border-[#FF2D9A] bg-[#000000] px-4 py-3 text-center text-sm text-[#FF2D9A]">
+          🔒 Esta orden ya fue entregada y está cerrada. Solo lectura.
+        </div>
+      )}
 
       <form onSubmit={handleSave} className="space-y-6">
         <fieldset className="space-y-4">
@@ -158,6 +183,9 @@ export default function EditarPage({ params }: { params: Promise<{ id: string }>
               {equipo.clientes.correo && (
                 <p className="text-xs text-[#737373]">{equipo.clientes.correo}</p>
               )}
+              {equipo.clientes.direccion && (
+                <p className="text-xs text-[#737373]">{equipo.clientes.direccion}</p>
+              )}
             </div>
           )}
         </fieldset>
@@ -167,10 +195,10 @@ export default function EditarPage({ params }: { params: Promise<{ id: string }>
             Equipo
           </legend>
           <div className="space-y-3">
-            <InputRow icon={<Monitor size={14} />} label="Tipo de equipo" value={equipo.tipo_equipo} onChange={(v) => update("tipo_equipo", v)} />
-            <InputRow icon={<Wrench size={14} />} label="Marca" value={equipo.marca} onChange={(v) => update("marca", v)} />
-            <InputRow icon={<Hash size={14} />} label="Modelo" value={equipo.modelo} onChange={(v) => update("modelo", v)} />
-            <InputRow icon={<Hash size={14} />} label="N° de serie" value={equipo.serial} onChange={(v) => update("serial", v)} />
+            <InputRow icon={<Monitor size={14} />} label="Tipo de equipo" value={equipo.tipo_equipo} onChange={(v) => update("tipo_equipo", v)} disabled={isEntregado} />
+            <InputRow icon={<Wrench size={14} />} label="Marca" value={equipo.marca} onChange={(v) => update("marca", v)} disabled={isEntregado} />
+            <InputRow icon={<Hash size={14} />} label="Modelo" value={equipo.modelo} onChange={(v) => update("modelo", v)} disabled={isEntregado} />
+            <InputRow icon={<Hash size={14} />} label="N° de serie" value={equipo.serial} onChange={(v) => update("serial", v)} disabled={isEntregado} />
           </div>
         </fieldset>
 
@@ -179,8 +207,8 @@ export default function EditarPage({ params }: { params: Promise<{ id: string }>
             Servicio
           </legend>
           <div className="space-y-3">
-            <TextareaRow icon={<Wrench size={14} />} label="Falla reportada" value={equipo.falla_reportada} onChange={(v) => update("falla_reportada", v)} />
-            <TextareaRow icon={<Package size={14} />} label="Accesorios" value={equipo.accesorios ?? ""} onChange={(v) => update("accesorios", v)} />
+            <TextareaRow icon={<Wrench size={14} />} label="Falla reportada" value={equipo.falla_reportada} onChange={(v) => update("falla_reportada", v)} disabled={isEntregado} />
+            <TextareaRow icon={<Package size={14} />} label="Accesorios" value={equipo.accesorios ?? ""} onChange={(v) => update("accesorios", v)} disabled={isEntregado} />
           </div>
         </fieldset>
 
@@ -190,8 +218,8 @@ export default function EditarPage({ params }: { params: Promise<{ id: string }>
               Cierre de Orden
             </legend>
             <div className="space-y-3">
-              <TextareaRow icon={<FileText size={14} />} label="Notas / Observaciones" value={equipo.notas_entrega ?? ""} onChange={(v) => update("notas_entrega", v)} />
-              <InputRow icon={<DollarSign size={14} />} label="Costo de reparación ($)" value={equipo.costo ?? ""} onChange={(v) => update("costo", v)} />
+              <TextareaRow icon={<FileText size={14} />} label="Notas / Observaciones" value={equipo.notas_entrega ?? ""} onChange={(v) => update("notas_entrega", v)} disabled={isEntregado} />
+              <InputRow icon={<DollarSign size={14} />} label="Costo de reparación ($)" value={equipo.costo ?? ""} onChange={(v) => update("costo", v)} disabled={isEntregado} />
             </div>
           </fieldset>
         )}
@@ -259,22 +287,22 @@ export default function EditarPage({ params }: { params: Promise<{ id: string }>
   );
 }
 
-function InputRow({ icon, label, value, onChange }: { icon: React.ReactNode; label: string; value: string; onChange: (v: string) => void }) {
+function InputRow({ icon, label, value, onChange, disabled }: { icon: React.ReactNode; label: string; value: string; onChange: (v: string) => void; disabled?: boolean }) {
   const fieldId = label.replace(/\s+/g, "-").toLowerCase();
   return (
     <div className="group block">
       <label htmlFor={fieldId} className="mb-1.5 flex items-center gap-1.5 text-xs text-[#FF2D9A]">{icon}{label}</label>
-      <input id={fieldId} value={value} onChange={(e) => onChange(e.target.value)} className="w-full border border-[#1E90FF] bg-[#000000] px-3 py-2.5 text-sm text-[#f5f5f5] transition-colors placeholder:text-[#555] focus:border-[#00CFFF]" />
+      <input id={fieldId} value={value} onChange={(e) => onChange(e.target.value)} disabled={disabled} className="w-full border border-[#1E90FF] bg-[#000000] px-3 py-2.5 text-sm text-[#f5f5f5] transition-colors focus:border-[#00CFFF] disabled:cursor-not-allowed disabled:opacity-50" />
     </div>
   );
 }
 
-function TextareaRow({ icon, label, value, onChange }: { icon: React.ReactNode; label: string; value: string; onChange: (v: string) => void }) {
+function TextareaRow({ icon, label, value, onChange, disabled }: { icon: React.ReactNode; label: string; value: string; onChange: (v: string) => void; disabled?: boolean }) {
   const fieldId = label.replace(/\s+/g, "-").toLowerCase();
   return (
     <div className="group block">
       <label htmlFor={fieldId} className="mb-1.5 flex items-center gap-1.5 text-xs text-[#FF2D9A]">{icon}{label}</label>
-      <textarea id={fieldId} rows={4} value={value} onChange={(e) => onChange(e.target.value)} className="w-full resize-none border border-[#1E90FF] bg-[#000000] px-3 py-2.5 text-sm text-[#f5f5f5] transition-colors placeholder:text-[#555] focus:border-[#00CFFF]" />
+      <textarea id={fieldId} rows={4} value={value} onChange={(e) => onChange(e.target.value)} disabled={disabled} className="w-full resize-none border border-[#1E90FF] bg-[#000000] px-3 py-2.5 text-sm text-[#f5f5f5] transition-colors focus:border-[#00CFFF] disabled:cursor-not-allowed disabled:opacity-50" />
     </div>
   );
 }

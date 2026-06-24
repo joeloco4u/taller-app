@@ -3,7 +3,7 @@
 import { useState, FormEvent } from "react";
 import { createClient } from "@/utils/supabase/client";
 import {
-  User, Hash, Phone, Mail, Monitor, Wrench, Package, ClipboardList, CheckCircle, Loader, Search,
+  User, Hash, Phone, Mail, MapPin, Monitor, Wrench, Package, ClipboardList, CheckCircle, Loader, Search,
 } from "lucide-react";
 
 type FormData = {
@@ -11,6 +11,7 @@ type FormData = {
   cedula: string;
   telefono: string;
   correo: string;
+  direccion: string;
   tipo_equipo: string;
   marca: string;
   modelo: string;
@@ -20,7 +21,7 @@ type FormData = {
 };
 
 const emptyForm: FormData = {
-  nombre: "", cedula: "", telefono: "", correo: "",
+  nombre: "", cedula: "", telefono: "", correo: "", direccion: "",
   tipo_equipo: "", marca: "", modelo: "", serial: "",
   falla_reportada: "", accesorios: "",
 };
@@ -47,7 +48,7 @@ export default function FormIngreso() {
 
     const { data } = await supabase
       .from("clientes")
-      .select("nombre, telefono, correo")
+      .select("nombre, telefono, correo, direccion")
       .eq("cedula", cedula)
       .maybeSingle();
 
@@ -57,6 +58,7 @@ export default function FormIngreso() {
         nombre: data.nombre,
         telefono: data.telefono,
         correo: data.correo ?? "",
+        direccion: data.direccion ?? "",
       }));
       setClienteMsg({ text: "Cliente encontrado", type: "found" });
     } else {
@@ -91,6 +93,7 @@ export default function FormIngreso() {
             cedula: form.cedula,
             telefono: form.telefono,
             correo: form.correo || null,
+            direccion: form.direccion || null,
           })
           .select("id")
           .single();
@@ -185,7 +188,7 @@ export default function FormIngreso() {
                 <div className="flex-1">
                   <InputRow
                     icon={<Hash size={14} />} label="Cédula / RIF"
-                    placeholder="Ej: V-12345678" value={form.cedula}
+                    value={form.cedula}
                     onChange={(v) => update("cedula", v)} required
                   />
                 </div>
@@ -216,18 +219,23 @@ export default function FormIngreso() {
             </div>
             <InputRow
               icon={<User size={14} />} label="Nombre completo"
-              placeholder="Ej: Juan Pérez" value={form.nombre}
+              value={form.nombre}
               onChange={(v) => update("nombre", v)} required
             />
             <InputRow
               icon={<Phone size={14} />} label="Teléfono" type="tel"
-              placeholder="Ej: +584121234567" value={form.telefono}
+              value={form.telefono}
               onChange={(v) => update("telefono", v)} required
             />
             <InputRow
               icon={<Mail size={14} />} label="Correo electrónico" type="email"
-              placeholder="Ej: juan@correo.com" value={form.correo}
+              value={form.correo}
               onChange={(v) => update("correo", v)}
+            />
+            <InputRow
+              icon={<MapPin size={14} />} label="Dirección"
+              value={form.direccion}
+              onChange={(v) => update("direccion", v)}
             />
           </div>
         </fieldset>
@@ -239,22 +247,22 @@ export default function FormIngreso() {
           <div className="space-y-3">
             <InputRow
               icon={<Monitor size={14} />} label="Tipo de equipo"
-              placeholder="Ej: Laptop, PC, Impresora" value={form.tipo_equipo}
+              value={form.tipo_equipo}
               onChange={(v) => update("tipo_equipo", v)} required
             />
             <InputRow
               icon={<Wrench size={14} />} label="Marca"
-              placeholder="Ej: HP, Dell, Lenovo" value={form.marca}
+              value={form.marca}
               onChange={(v) => update("marca", v)} required
             />
             <InputRow
               icon={<Hash size={14} />} label="Modelo"
-              placeholder="Ej: Pavilion 15" value={form.modelo}
+              value={form.modelo}
               onChange={(v) => update("modelo", v)} required
             />
             <InputRow
               icon={<Hash size={14} />} label="N° de serie"
-              placeholder="Ej: ABC123XYZ" value={form.serial}
+              value={form.serial}
               onChange={(v) => update("serial", v)} required
             />
           </div>
@@ -267,13 +275,11 @@ export default function FormIngreso() {
           <div className="space-y-3">
             <TextareaRow
               icon={<Wrench size={14} />} label="Falla reportada"
-              placeholder="Describe el problema que presenta el equipo..."
               value={form.falla_reportada}
               onChange={(v) => update("falla_reportada", v)} required
             />
             <TextareaRow
               icon={<Package size={14} />} label="Accesorios incluidos"
-              placeholder="Ej: Cargador, mouse, funda, cable HDMI..."
               value={form.accesorios}
               onChange={(v) => update("accesorios", v)}
             />
@@ -298,9 +304,9 @@ export default function FormIngreso() {
 }
 
 function InputRow({
-  icon, label, type = "text", placeholder, value, onChange, required,
+  icon, label, type = "text", value, onChange, required,
 }: {
-  icon: React.ReactNode; label: string; type?: string; placeholder: string;
+  icon: React.ReactNode; label: string; type?: string;
   value: string; onChange: (v: string) => void; required?: boolean;
 }) {
   const fieldId = label.replace(/\s+/g, "-").toLowerCase();
@@ -311,18 +317,18 @@ function InputRow({
       </label>
       <input
         id={fieldId}
-        type={type} placeholder={placeholder} value={value}
+        type={type} value={value}
         onChange={(e) => onChange(e.target.value)} required={required}
-        className="w-full border border-[#1E90FF] bg-[#000000] px-3 py-2.5 text-sm text-[#f5f5f5] transition-colors placeholder:text-[#555] focus:border-[#00CFFF]"
+        className="w-full border border-[#1E90FF] bg-[#000000] px-3 py-2.5 text-sm text-[#f5f5f5] transition-colors focus:border-[#00CFFF]"
       />
     </div>
   );
 }
 
 function TextareaRow({
-  icon, label, placeholder, value, onChange, required,
+  icon, label, value, onChange, required,
 }: {
-  icon: React.ReactNode; label: string; placeholder: string;
+  icon: React.ReactNode; label: string;
   value: string; onChange: (v: string) => void; required?: boolean;
 }) {
   const fieldId = label.replace(/\s+/g, "-").toLowerCase();
@@ -333,9 +339,9 @@ function TextareaRow({
       </label>
       <textarea
         id={fieldId}
-        rows={3} placeholder={placeholder} value={value}
+        rows={3} value={value}
         onChange={(e) => onChange(e.target.value)} required={required}
-        className="w-full resize-none border border-[#1E90FF] bg-[#000000] px-3 py-2.5 text-sm text-[#f5f5f5] transition-colors placeholder:text-[#555] focus:border-[#00CFFF]"
+        className="w-full resize-none border border-[#1E90FF] bg-[#000000] px-3 py-2.5 text-sm text-[#f5f5f5] transition-colors focus:border-[#00CFFF]"
       />
     </div>
   );

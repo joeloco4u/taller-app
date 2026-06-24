@@ -8,6 +8,7 @@ export type Database = {
           cedula: string;
           telefono: string;
           correo: string | null;
+          direccion: string | null;
           created_at: string;
         };
         Insert: {
@@ -16,6 +17,7 @@ export type Database = {
           cedula: string;
           telefono: string;
           correo?: string | null;
+          direccion?: string | null;
           created_at?: string;
         };
         Update: {
@@ -24,6 +26,7 @@ export type Database = {
           cedula?: string;
           telefono?: string;
           correo?: string | null;
+          direccion?: string | null;
           created_at?: string;
         };
       };

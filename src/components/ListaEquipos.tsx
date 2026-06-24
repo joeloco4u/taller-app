@@ -100,8 +100,7 @@ export default function ListaEquipos() {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Buscar por serial, marca, cliente..."
-            className="w-full border border-[#1E90FF] bg-[#000000] py-2 pl-8 pr-3 text-sm text-[#f5f5f5] placeholder:text-[#555] focus:border-[#00CFFF]"
+            className="w-full border border-[#1E90FF] bg-[#000000] py-2 pl-8 pr-3 text-sm text-[#f5f5f5] focus:border-[#00CFFF]"
           />
         </div>
         <div className="relative">

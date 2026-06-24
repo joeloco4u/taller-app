@@ -11,6 +11,7 @@ type Cliente = {
   cedula: string;
   telefono: string;
   correo: string | null;
+  direccion: string | null;
   created_at: string;
 };
 
@@ -113,8 +114,7 @@ export default function DirectorioClientes() {
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Buscar por nombre o cédula..."
-          className="w-full border border-[#1E90FF] bg-[#000000] py-2.5 pl-8 pr-3 text-sm text-[#f5f5f5] placeholder:text-[#555] focus:border-[#00CFFF]"
+          className="w-full border border-[#1E90FF] bg-[#000000] py-2.5 pl-8 pr-3 text-sm text-[#f5f5f5] focus:border-[#00CFFF]"
         />
       </div>
 
@@ -141,6 +141,9 @@ export default function DirectorioClientes() {
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium text-[#f5f5f5]">{cliente.nombre}</p>
                     <p className="truncate text-xs text-[#737373]">{cliente.cedula} · {cliente.telefono}</p>
+                    {cliente.direccion && (
+                      <p className="truncate text-[10px] text-[#555]">{cliente.direccion}</p>
+                    )}
                   </div>
                   {cliente.correo && (
                     <span className="hidden text-[10px] text-[#555] sm:block">{cliente.correo}</span>

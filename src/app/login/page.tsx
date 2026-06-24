@@ -68,9 +68,8 @@ export default function LoginPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@taller.com"
               required
-              className="w-full border border-[#1E90FF] bg-[#000000] px-3 py-2.5 text-sm text-[#f5f5f5] placeholder:text-[#555] focus:border-[#00CFFF]"
+              className="w-full border border-[#1E90FF] bg-[#000000] px-3 py-2.5 text-sm text-[#f5f5f5] focus:border-[#00CFFF]"
             />
           </label>
 
@@ -83,9 +82,8 @@ export default function LoginPage() {
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
                 required
-                className="w-full border border-[#1E90FF] bg-[#000000] px-3 py-2.5 pr-10 text-sm text-[#f5f5f5] placeholder:text-[#555] focus:border-[#00CFFF]"
+                className="w-full border border-[#1E90FF] bg-[#000000] px-3 py-2.5 pr-10 text-sm text-[#f5f5f5] focus:border-[#00CFFF]"
               />
               <button
                 type="button"
